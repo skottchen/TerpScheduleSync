@@ -1,0 +1,22 @@
+body {
+  height: auto;
+  width: 250px;
+  text-align: center;
+}
+
+img {
+  height: 170px;
+  width: 200px;
+}
+
+button {
+  height: auto;
+  width: 150px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 3px solid black;
+  background: red;
+  font-size: 15px;
+  font-weight: 400;
+  padding: 12px;
+}

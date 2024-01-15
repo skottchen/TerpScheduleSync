@@ -1,0 +1,11 @@
+{
+  "manifest_version": 3,
+  "name": "Import UMD Schedule to Google Calender",
+  "description": "Base Level Extension",
+  "version": "1.0",
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": "images/testudo.png"
+  },
+  "permissions": ["tabs"]
+}
