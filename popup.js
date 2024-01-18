@@ -13,7 +13,7 @@ async function getCurrentTab() {//returns a promise
     return tab;
 }
 
-async function verifyCurrectTabAndOpenPopup() {
+async function verifyTestudoIsOpen() {
     return getCurrentTab().then(
         function (response) {
             return response;
@@ -28,5 +28,4 @@ async function verifyCurrectTabAndOpenPopup() {
     )
 }
 
-verifyCurrectTabAndOpenPopup();
-
+verifyTestudoIsOpen();

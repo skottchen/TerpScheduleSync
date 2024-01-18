@@ -7,5 +7,15 @@
     "default_popup": "popup.html",
     "default_icon": "images/testudo.png"
   },
-  "permissions": ["tabs"]
+  "permissions": ["tabs", "activeTab", "scripting"],
+  "background": {
+    "service_worker": "service-worker.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["https://*.testudo.umd.edu/*"],
+      "run_at": "document_idle",
+      "js": ["schedule-importer.js"]
+    }
+  ]
 }
