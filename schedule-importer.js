@@ -1,17 +1,8 @@
 chrome.runtime.onMessage.addListener(async function (request) {
-    if (request.action === 'importCoursesIntoGoogleCalendar') {
-        // await new Promise((resolve) => {
-        //     setTimeout(() => {
-        //         window.location.reload();
-        //     }, 3000);
-        //     resolve("Page loaded");
-        // }).then(
-        //     getScheduleData()
-        // )
-        getScheduleData();
+    if (request.action === 'performTasksAfterAuthorization') {
+        await getScheduleData();
     }
 });
-
 
 async function getScheduleData() {
     await new Promise((r) => setTimeout(r, 3000)); //wait for Testudo to load as it is often under heavy traffic
@@ -53,9 +44,7 @@ function parseCourse(course) {//format schedule data so that is readable by the 
         }
     })
 
-    if (courseArr.length > 1) {
-        importCourseIntoGoogleCalendar(course);
-    }
+    console.log(courseArr);
 }
 
 //format the course day and time so that it is readable by Google Calendar API
@@ -91,11 +80,11 @@ function parseCourseDayTime(timeArr) {
 function parseCourseTime(time) {
     let formattedTime = time;
     if (time.endsWith("am")) {
-        if ((time.slice(0, 1)) != "1") {//time is not 10:00, 11:00, or 12:00
+        if ((time.slice(0, 1)) != "1") {//check if time is not 10:00am, 11:00am, or 12:00am
             formattedTime = "0" + time;
         }
     } else if (time.endsWith("pm")) {
-        if ((time.slice(0, 2)) != "12") {//time is past 12 pm
+        if ((time.slice(0, 2)) != "12") {//check if time is past 12 pm
             formattedTime = (parseInt(time.slice(0, 1)) + 12).toString()//1 -> "13", 2, -> "14", 5 -> "17", etc.
             formattedTime += time.slice(1, 4) + ":00-7:00";
             return formattedTime;
@@ -109,5 +98,4 @@ function parseCourseTime(time) {
 function importCourseIntoGoogleCalendar(course) {
 
 }
-
 
