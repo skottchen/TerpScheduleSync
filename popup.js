@@ -15,12 +15,13 @@ async function getCurrentTab() {//returns a promise
 }
 
 async function verifyTestudoIsOpen() {
-    return getCurrentTab().then(
+    return await getCurrentTab().then(
         function (response) {
             return response;
         }
     ).then(
         function (response) {
+            console.log(response);
             if (response.url.startsWith('https://app.testudo.umd.edu/#/main/schedule?termId')) {
                 link.remove();
                 popupBody.appendChild(importBtn);
@@ -34,12 +35,11 @@ verifyTestudoIsOpen();
 function handleImportButtonClick() {
     chrome.identity.getAuthToken({ interactive: true }, function (token) {
         // Send a message to the service worker to authorize the user
-        sendMessageToServiceWorker();
-        console.log(token);
+        sendMessageToServiceWorker(token);
     });
     document.getElementById("import_btn").disabled = true;
 }
 
-function sendMessageToServiceWorker() {
-    chrome.runtime.sendMessage({ action: 'authorizeUser' });
+function sendMessageToServiceWorker(token) {
+    chrome.runtime.sendMessage({ action: 'authorizeUser', token: token});
 }

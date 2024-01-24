@@ -1,16 +1,51 @@
+const API_KEY = "AIzaSyCRb3bGF3c28-6vR719gv6Lp_hd4TNpVuM";
+let calendarId;
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
-        await getScheduleData();
+        //refresh?
+        const token = request.token;
+        await createNewCalendar(token);
+        await getScheduleData(token);
     }
 });
 
-async function getScheduleData() {
+async function createNewCalendar(token) {
+    const apiUrl = `https://www.googleapis.com/calendar/v3/calendars?key=${API_KEY}`
+    const courseCalendar = {
+        summary: "UMD Sp24 Course Schedule",
+        timeZone: "America/New_York",
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+            body: JSON.stringify(courseCalendar),
+        });
+        if (response.ok) {
+            const responseData = await response.json();
+            calendarId = responseData.id;
+            console.log('New calendar created successfully. Calendar ID:', calendarId);
+        } else {
+            const errorData = await response.json();
+            console.log(apiUrl);
+            console.error('Failed to create new calendar:', errorData.error.message);
+        }
+    } catch (error) {
+        console.error('Error creating new calendar:', error);
+    }
+}
+async function getScheduleData(token) {
     await new Promise((r) => setTimeout(r, 3000)); //wait for Testudo to load as it is often under heavy traffic
     let studentCourses = document.querySelectorAll(".course-card-container--info");
     if (studentCourses.length > 0) {
         let count = 0;
         for (const course of studentCourses) {
-            parseCourse(studentCourses[count].innerText);
+            parseCourse(studentCourses[count].innerText, token);
+            console.log(studentCourses[count].innerText);
             count++;
         }
     } else {
@@ -18,10 +53,11 @@ async function getScheduleData() {
     }
 }
 
-function parseCourse(course) {//format schedule data so that is readable by the Google Calendar API
+function parseCourse(course, token) {//format schedule data so that is readable by the Google Calendar API
     let courseArr = course.split("\n")
     courseArr.splice(1, 1);
     courseArr[0] = courseArr[0].trim();
+    //splice off the section number of the course
     courseArr.splice(-2, 2);
     courseArr.forEach((elem) => {
         if (elem.includes("EST")) {
@@ -44,7 +80,19 @@ function parseCourse(course) {//format schedule data so that is readable by the 
         }
     })
 
-    console.log(courseArr);
+    courseArr.forEach((elem) => {
+        if (elem == "Lec") {
+            const elemIdx = courseArr.indexOf(elem);
+            courseArr[elemIdx] = "Lecture";
+        } else if (elem == "Dis") {
+            const elemIdx = courseArr.indexOf(elem);
+            courseArr[elemIdx] = "Discussion";
+        }
+    })
+
+    if (courseArr.length > 1) {
+        importCourseIntoGoogleCalendar(courseArr, token);
+    }
 }
 
 //format the course day and time so that it is readable by Google Calendar API
@@ -86,16 +134,58 @@ function parseCourseTime(time) {
     } else if (time.endsWith("pm")) {
         if ((time.slice(0, 2)) != "12") {//check if time is past 12 pm
             formattedTime = (parseInt(time.slice(0, 1)) + 12).toString()//1 -> "13", 2, -> "14", 5 -> "17", etc.
-            formattedTime += time.slice(1, 4) + ":00-7:00";
+            formattedTime += time.slice(1, 4) + ":00-05:00";
             return formattedTime;
         }
     }
-    formattedTime = formattedTime.slice(0, formattedTime.length - 2) + ":00-07:00"; //offset of 7 hours from UTC (Coordinated Universal Time)
+    formattedTime = formattedTime.slice(0, formattedTime.length - 2) + ":00-05:00"; //EST has offset of 5 hours from UTC (Coordinated Universal Time)
     return formattedTime;
 }
 
+async function importCourseIntoGoogleCalendar(courseArr, token) {
+    courseArr.forEach(async (elem) => {
+        if (elem instanceof Array) {//create an event for each lecture, discussion, or lab
+            const elemIdx = courseArr.indexOf(elem);
+            await createEvent(token, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
+        }
+    })
+}
 
-function importCourseIntoGoogleCalendar(course) {
 
+//courseFormat - Lecture, Discussion, or Lab
+async function createEvent(token, courseName, courseTime, courseFormat, courseLocation) {
+    const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}`;
+    const eventDetails = {
+        summary: courseName + " " + courseFormat,
+        location: courseLocation,
+        start: {
+            dateTime: `2024-01-24T${courseTime[1]}`,
+            timeZone: 'America/New_York',
+        },
+        end: {
+            dateTime: `2024-01-24T${courseTime[2]}`,
+            timeZone: 'America/New_York',
+        },
+    };
+
+    try {
+        const response = await fetch(apiUrl, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                Authorization: 'Bearer ' + token,
+            },
+            body: JSON.stringify(eventDetails),
+        });
+
+        if (response.ok) {
+            console.log(courseName + ' added to the calendar successfully!');
+        } else {
+            const errorData = await response.json();
+            console.error(`Failed to add ${courseName} to the calendar:`, errorData.error.message);
+        }
+    } catch (error) {
+        console.error(`Error adding ${courseName} to the calendar:`, error);
+    }
 }
 
