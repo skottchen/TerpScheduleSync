@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyCRb3bGF3c28-6vR719gv6Lp_hd4TNpVuM";
+const API_KEY = "####################";
 let calendarId;
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
