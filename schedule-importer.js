@@ -6,7 +6,7 @@ chrome.runtime.onMessage.addListener(async function (request) {
         const token = request.token;
         await createNewCalendar(token);
         await getScheduleData(token);
-        // window.close();//close Testudo (current window)
+        window.close();//close Testudo (current window)
         window.open("https://calendar.google.com/calendar/u/0/r") //end of application
     }
 });
