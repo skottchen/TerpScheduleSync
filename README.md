@@ -1,3 +1,3 @@
 # TestudoGCalIntegration
-Developed by Scott Chen
+Developed by Scott Chen <br>
 Extension design by Reem Saleh
