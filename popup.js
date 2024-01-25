@@ -5,6 +5,8 @@ importBtn.style.backgroundColor = "lightblue";
 importBtn.textContent = "Import my schedule to Google Calendar!";
 importBtn.setAttribute("id", "import_btn");
 importBtn.addEventListener('click', handleImportButtonClick);
+const loadingText = document.createElement("h2");
+loadingText.textContent = "Parsing your schedule..."
 
 //this function was provided by the Chrome Extension API
 async function getCurrentTab() {//returns a promise
@@ -38,6 +40,7 @@ function handleImportButtonClick() {
         sendMessageToServiceWorker(token);
     });
     document.getElementById("import_btn").disabled = true;
+    popupBody.appendChild(loadingText);
 }
 
 function sendMessageToServiceWorker(token) {

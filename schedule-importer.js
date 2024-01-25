@@ -1,11 +1,13 @@
-const API_KEY = "AIzaSyCRb3bGF3c28-6vR719gv6Lp_hd4TNpVuM";
+const API_KEY = "AIzaSyBG641ft-K02Iw3uLY4ALnV4bMj3CNXuB8";
 let calendarId;
+let currSemester;
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
-        //refresh?
         const token = request.token;
         await createNewCalendar(token);
         await getScheduleData(token);
+        // window.close();//close Testudo (current window)
+        window.open("https://calendar.google.com/calendar/u/0/r") //end of application
     }
 });
 
@@ -40,12 +42,13 @@ async function createNewCalendar(token) {
 }
 async function getScheduleData(token) {
     await new Promise((r) => setTimeout(r, 3000)); //wait for Testudo to load as it is often under heavy traffic
+    currSemester = document.querySelector("span.header-dropdown-label").innerText;
+    console.log(currSemester);
     let studentCourses = document.querySelectorAll(".course-card-container--info");
     if (studentCourses.length > 0) {
         let count = 0;
         for (const course of studentCourses) {
             parseCourse(studentCourses[count].innerText, token);
-            console.log(studentCourses[count].innerText);
             count++;
         }
     } else {
@@ -56,8 +59,8 @@ async function getScheduleData(token) {
 function parseCourse(course, token) {//format schedule data so that is readable by the Google Calendar API
     let courseArr = course.split("\n")
     courseArr.splice(1, 1);
+    courseArr[0] = courseArr[0].slice(0, courseArr[0].length - 6);//remove section number from course
     courseArr[0] = courseArr[0].trim();
-    //splice off the section number of the course
     courseArr.splice(-2, 2);
     courseArr.forEach((elem) => {
         if (elem.includes("EST")) {
@@ -143,29 +146,35 @@ function parseCourseTime(time) {
 }
 
 async function importCourseIntoGoogleCalendar(courseArr, token) {
+    const colorId = (Math.floor(Math.random() * 11) + 1).toString();//each course component (lecture and discussion) will have the same background color
     courseArr.forEach(async (elem) => {
         if (elem instanceof Array) {//create an event for each lecture, discussion, or lab
             const elemIdx = courseArr.indexOf(elem);
-            await createEvent(token, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
+            const courseFirstDay = getCourseStartDate(courseArr[elemIdx]);
+            await createEvent(token, colorId, courseFirstDay, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
         }
     })
 }
 
-
 //courseFormat - Lecture, Discussion, or Lab
-async function createEvent(token, courseName, courseTime, courseFormat, courseLocation) {
+async function createEvent(token, colorId, courseFirstDay, courseName, courseTime, courseFormat, courseLocation) {
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}`;
+    const semesterEndDate = getSemesterEndDate();
     const eventDetails = {
         summary: courseName + " " + courseFormat,
         location: courseLocation,
+        colorId: colorId,
         start: {
-            dateTime: `2024-01-24T${courseTime[1]}`,
+            dateTime: `${courseFirstDay}T${courseTime[1]}`,
             timeZone: 'America/New_York',
         },
         end: {
-            dateTime: `2024-01-24T${courseTime[2]}`,
+            dateTime: `${courseFirstDay}T${courseTime[2]}`,
             timeZone: 'America/New_York',
         },
+        recurrence: [
+            `RRULE:FREQ=WEEKLY;UNTIL=${semesterEndDate};BYDAY=${courseTime[0]}`
+        ],
     };
 
     try {
@@ -189,3 +198,29 @@ async function createEvent(token, courseName, courseTime, courseFormat, courseLo
     }
 }
 
+function getCourseStartDate(courseDayTimeArr) {
+    let startDate;
+    if (currSemester == "Spring 2024") {
+        if (courseDayTimeArr[0] == "MO,WE,FR" || courseDayTimeArr[0] == "MO,WE"
+            || courseDayTimeArr[0] == "WE") {
+            startDate = "2024-01-24"
+        } else if (courseDayTimeArr[0] == "TU,TH" || courseDayTimeArr[0] == "TH") {
+            startDate = "2024-01-25"
+        } else if (courseDayTimeArr[0] == "FR") {
+            startDate = "2024-01-26"
+        } else if (courseDayTimeArr[0] == "MO") {
+            startDate = "2024-01-29"
+        } else {//courseDayTimeArr[0] == "TU"
+            startDate = "2024-01-30";
+        }
+    }
+    return startDate;
+}
+
+function getSemesterEndDate(){
+    let semesterEndDate;
+    if(currSemester == "Spring 2024"){
+        semesterEndDate = "20240510"
+    }
+    return semesterEndDate;
+}
