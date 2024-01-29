@@ -1,4 +1,4 @@
-const API_KEY = "#################################";
+const API_KEY = "AIzaSyCGUPtrVSQoKuZvAlokwmhMT_JTvyIiBpM";
 let calendarId;
 let currSemester;
 
@@ -24,7 +24,7 @@ async function getScheduleData(token) {
             parseCourse(studentCourses[count].innerText, token);
             count++;
         }
-        
+
     } else {
         alert("You are not registered for any classes this semester.");
     }
@@ -63,7 +63,7 @@ async function createNewCalendar(token) {
 async function parseCourse(course, token) {//format schedule data so that is readable by the Google Calendar API
     let courseArr = course.split("\n");
     courseArr.splice(1, 1);
-    courseArr[0] = courseArr[0].slice(0, courseArr[0].length - 6);//remove section number from course
+    //courseArr[0] = courseArr[0].slice(0, courseArr[0].length - 6); remove section number from course
     courseArr[0] = courseArr[0].trim();
     courseArr.splice(-2, 2);
     courseArr.forEach((elem) => {
@@ -138,7 +138,7 @@ function parseCourseDayTime(timeArr) {
     return timeArr;
 }
 
-
+//convert time of course to Google Calendar API time format
 //9:30am -> 09:30:00-7:00
 //12:00pm -> 12:00:00-7:00
 //5:00pm -> 17:00:00-7:00
@@ -231,6 +231,12 @@ function getSemesterStartDate() {
         startDate = "2025-01-02"
     } else if (startDate == "Spring 2025") {
         startDate = "2025-01-27"
+    } else if (startDate == "Summer I 2025") {
+        startDate = "2025-06-02"
+    } else if (startDate == "Summer II 2025") {
+        startDate = "2025-07-14"
+    } else {//Fall 2025
+        startDate = "2025-09-02"
     }
     return startDate;
 }
@@ -253,6 +259,12 @@ function getSemesterEndDate() {
         semesterEndDate = "20250123"
     } else if (startDate == "Spring 2025") {
         semesterEndDate = "20250514"
+    } else if (startDate == "Summer I 2025") {
+        semesterEndDate = "20250712"
+    } else if (startDate == "Summer II 2025") {
+        semesterEndDate = "20250823"
+    } else {//Fall 2025
+        semesterEndDate = "20251213"
     }
     return semesterEndDate;
 }
@@ -345,7 +357,7 @@ async function cancelFirstInstance(token, instanceId, startTime, endTime) {
                 'Content-Type': 'application/json',
                 Authorization: 'Bearer ' + token,
             },
-            
+
             body: JSON.stringify(eventToDelete)
         });
 
