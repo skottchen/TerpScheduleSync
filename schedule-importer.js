@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyCGUPtrVSQoKuZvAlokwmhMT_JTvyIiBpM";
+const API_KEY = "#######################################";
 let calendarId;
 let currSemester;
 
