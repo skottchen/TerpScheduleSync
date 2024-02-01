@@ -8,10 +8,10 @@
     "default_popup": "popup.html",
     "default_icon": "images/testudo.png"
   },
-  "permissions": ["tabs", "activeTab", "scripting", "identity"],
+  "permissions": ["tabs", "identity"],
   "content_scripts": [
     {
-      "matches": ["https://*.testudo.umd.edu/*"],
+      "matches": ["https://app.testudo.umd.edu/*"],
       "runAt": "document_idle",
       "js": ["schedule-importer.js"]
     }
