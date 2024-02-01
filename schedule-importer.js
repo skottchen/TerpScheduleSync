@@ -139,10 +139,10 @@ function parseCourseDayTime(timeArr) {
 }
 
 //convert time of course to Google Calendar API time format
-//9:30am -> 09:30:00-7:00
-//12:00pm -> 12:00:00-7:00
-//5:00pm -> 17:00:00-7:00
-//6:15 pm -> 18:15:00-7:00
+//9:30am -> 09:30:00-5:00
+//12:00pm -> 12:00:00-5:00
+//5:00pm -> 17:00:00-5:00
+//6:15 pm -> 18:15:00-5:00
 function parseCourseTime(time) {
     let formattedTime = time;
     if (time.endsWith("am")) {
