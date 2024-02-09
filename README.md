@@ -17,8 +17,6 @@ Built With
 Simply download the [extension](https://chromewebstore.google.com/detail/terpschedulesync/jddhjnjljjagidpbanbfbacadiejbogn) from the Chrome Web Store and click through the buttons on the popup.  
 <em>Note: This extension is only for students enrolled at the University of Maryland, College Park </em>
 
-### [Live Demo]()
-
 ## License
 Distributed under the MIT License. See `License.txt` for more information. 
 
