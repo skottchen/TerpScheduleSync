@@ -2,7 +2,7 @@
 Import your semester course schedule from Testudo to Google Calendar
 
 ## Motivation
-As students at the University of Maryland, College Park, we all have many tedious tasks that we don't look forward to doing but that we must get done anyway. One of these tasks is making our schedule/planning our semester before it starts. To keep track of the time classes take place, students often manually enter their classes from Testudo into Google Calendar which can be a tedious and time consuming task. 
+As students at the University of Maryland, College Park, we all have many tedious tasks that we don't look forward to doing but that we must get done anyway. One of these tasks is making our schedule/planning our semester before it starts. To keep track of the time classes take place, students often manually enter their classes from Testudo into Google Calendar, which can be a tedious and time-consuming task. 
 
 To help UMD students save time from their busy schedules/having to import their courses manually to Google Calendar, I developed TerpScheduleSync, which automatically imports students' course schedules from the schedule page on Testudo (the university system) to Google Calendar. 
 
