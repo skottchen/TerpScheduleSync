@@ -14,7 +14,7 @@ Built With
 - Chrome Extension API, Google Calendar API, Fetch API
 
 ## How To Use
-Simply download the [extension](https://chromewebstore.google.com/detail/terpschedulesync/jddhjnjljjagidpbanbfbacadiejbogn) from the Chrome Web Store and click through the buttons on the popup.  
+Simply download the [extension](https://chromewebstore.google.com/detail/terpschedulesync/jddhjnjljjagidpbanbfbacadiejbogn) from the Chrome Web Store and click through the buttons on the popup. Make sure to click continue on the Oauth consent screen. 
 <em>Note: This extension is only for students enrolled at the University of Maryland, College Park </em>
 
 ## License
