@@ -9,7 +9,7 @@ To help UMD students save time from their busy schedules/having to import their 
 ## Challenges
 The most challenging aspect of this project was working with the Google Calendar API as its official documentation does not contain much information on how to make API requests with JavaScript. Another challenging aspect was using the Chrome Extension API to pass the access token from the popup (popup.js) to the content script (schedule_importer.js). 
 
-Built With
+## Built With
 - HTML, CSS, JavaScript (asynchronous concepts: async, await, promises, setTimeout) 
 - Chrome Extension API, Google Calendar API, Fetch API
 
