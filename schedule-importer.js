@@ -126,6 +126,8 @@ function parseCourseDayTime(timeArr) {
             continue;
         }
     }
+
+    //remove trailing comma from formattedDaysStr
     formattedDaysStr = formattedDaysStr.slice(
         0,
         formattedDaysStr.length - 1
@@ -163,9 +165,11 @@ function parseCourseTime(time) {
 async function importCourseIntoGoogleCalendar(courseArr, token) {
     const colorId = (Math.floor(Math.random() * 11) + 1).toString();//each course component (lecture and discussion) will have the same background color
     courseArr.forEach(async (elem) => {
-        if (elem instanceof Array) {//create an event for each lecture, discussion, or lab
-            const elemIdx = courseArr.indexOf(elem);//idex of array with day and time of classes
+        if (elem instanceof Array) {
+            const elemIdx = courseArr.indexOf(elem);//idx of array with day and time of classes
             const semesterStartDay = getSemesterStartDate();
+            
+            //create an event for each lecture, discussion, or lab
             await createEvent(token, colorId, semesterStartDay, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
         }
     })
