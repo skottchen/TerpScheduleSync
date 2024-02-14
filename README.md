@@ -21,4 +21,4 @@ Simply download the [extension](https://chromewebstore.google.com/detail/terpsch
 Distributed under the MIT License. See `License.txt` for more information. 
 
 ## Contact
-Send me an email at schen78997@gmail.com or testudodev1@gmail.com
+Send me an email at testudodev1@gmail.com
