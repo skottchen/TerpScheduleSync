@@ -1,4 +1,3 @@
-// service-worker.js
 chrome.runtime.onMessage.addListener(function (request) {
     if (request.action === 'authorizeUser') {
         // Perform tasks after user is authorized (e.g., send a message to content script)
