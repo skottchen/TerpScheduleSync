@@ -8,7 +8,6 @@ chrome.runtime.onMessage.addListener(async function (request) {
         await getScheduleData(token);
         await new Promise((r) => setTimeout(r, 2000));
         await deleteFirstDayIncorrectInstances(token);
-        window.close();//close Testudo (current window)
         window.open("https://calendar.google.com/calendar/u/0/r") //end of application
     }
 });

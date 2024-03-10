@@ -23,7 +23,6 @@ async function verifyTestudoIsOpen() {
         }
     ).then(
         function (response) {
-            console.log(response);
             if (response.url.startsWith('https://app.testudo.umd.edu/#/main/schedule?termId')) {
                 link.remove();
                 popupBody.appendChild(importBtn);
