@@ -1,7 +1,7 @@
 const importBtn = document.createElement("button");
 const link = document.querySelector('a');
 const popupBody = document.querySelector("body");
-importBtn.style.backgroundColor = "lightblue";
+importBtn.style.backgroundColor = "lightgreen";
 importBtn.textContent = "Import my schedule to Google Calendar!";
 importBtn.setAttribute("id", "import_btn");
 importBtn.addEventListener('click', handleImportButtonClick);
@@ -43,5 +43,5 @@ function handleImportButtonClick() {
 }
 
 function sendMessageToServiceWorker(token) {
-    chrome.runtime.sendMessage({ action: 'authorizeUser', token: token});
+    chrome.runtime.sendMessage({ action: 'authorizeUser', token: token });
 }
