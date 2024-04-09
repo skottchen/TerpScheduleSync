@@ -1,6 +1,7 @@
-const API_KEY = "#########################";
+const API_KEY = "AIzaSyCGUPtrVSQoKuZvAlokwmhMT_JTvyIiBpM";
 let calendarId;
 let currSemester;
+let colorCount = 1;
 
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
@@ -8,7 +9,8 @@ chrome.runtime.onMessage.addListener(async function (request) {
         await getScheduleData(token);
         await new Promise((r) => setTimeout(r, 2000));
         await deleteFirstDayIncorrectInstances(token);
-        window.open("https://calendar.google.com/calendar/u/0/r") //end of application
+        colorCount = 1;
+        window.open("https://calendar.google.com/calendar/u/0/r")
     }
 });
 
@@ -162,18 +164,46 @@ function parseCourseTime(time) {
 }
 
 async function importCourseIntoGoogleCalendar(courseArr, token) {
-    const colorId = (Math.floor(Math.random() * 11) + 1).toString();//each course component (lecture and discussion) will have the same background color
+    const colorId = getColorId();//each course component (lecture and discussion) will have the same background color
     courseArr.forEach(async (elem) => {
         if (elem instanceof Array) {
             const elemIdx = courseArr.indexOf(elem);//idx of array with day and time of classes
             const semesterStartDay = getSemesterStartDate();
-            
+
             //create an event for each lecture, discussion, or lab
             await createEvent(token, colorId, semesterStartDay, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
         }
     })
 }
 
+function getColorId() {
+    let colorId = ""
+    if (colorCount == 1) {
+        colorId = "1";
+    } else if (colorCount == 2) {
+        colorId = "2";
+    } else if (colorCount == 3) {
+        colorId = "3";
+    } else if (colorCount == 4) {
+        colorId = "4";
+    } else if (colorCount == 5) {
+        colorId = "5";
+    } else if (colorCount == 6) {
+        colorId = "6";
+    } else if (colorCount == 7) {
+        colorId = "7";
+    } else if (colorCount == 8) {
+        colorId = "8";
+    } else if (colorCount == 9) {
+        colorId = "9";
+    } else if (colorCount == 10) {
+        colorId = "10";
+    } else {
+        colorId = "11";
+    }
+    colorCount++;
+    return colorId;
+}
 //courseFormat - Lecture, Discussion, or Lab
 async function createEvent(token, colorId, semesterStartDay, courseName, courseTime, courseFormat, courseLocation) {
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}`;
