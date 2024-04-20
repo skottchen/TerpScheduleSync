@@ -84,7 +84,7 @@ async function parseCourse(course, token) {//format schedule data so that is rea
     courseArr.forEach((elem) => {
         if (elem instanceof Array) {
             const elemIdx = courseArr.indexOf(elem);
-            courseArr[elemIdx] = parseCourseDayTime(courseArr[elemIdx]);
+            courseArr[elemIdx] = parseCourseDayTime(courseArr[elemIdx], courseArr[0]);
         }
     })
 
@@ -104,8 +104,10 @@ async function parseCourse(course, token) {//format schedule data so that is rea
 }
 
 //format the course day and time so that it is readable by Google Calendar API
-function parseCourseDayTime(timeArr) {
+function parseCourseDayTime(timeArr, courseName) {
     let formattedDaysStr = "";
+
+    //parse course day
     for (let i = 0; i < timeArr[0].length; i++) {
         if (timeArr[0].charAt(i) == "M") {
             formattedDaysStr += "MO,";
@@ -135,9 +137,12 @@ function parseCourseDayTime(timeArr) {
     );
 
     timeArr[0] = formattedDaysStr;
+    console.log("Time not in GCal API Format: " + courseName + " " + timeArr[1])
+    console.log("Time not in GCal API Format: " + courseName + " " + timeArr[2])
     timeArr[1] = parseCourseTime(timeArr[1]);
     timeArr[2] = parseCourseTime(timeArr[2]);
-
+    console.log("Time converted to GCal API Format: " + courseName + " " + timeArr[1])
+    console.log("Time converted to GCal API Format: " + courseName + " " + timeArr[2])
     return timeArr;
 }
 
@@ -149,17 +154,45 @@ function parseCourseDayTime(timeArr) {
 function parseCourseTime(time) {
     let formattedTime = time;
     if (time.endsWith("am")) {
-        if ((time.slice(0, 1)) != "1") {//check if time is not 10:00am, 11:00am, or 12:00am
+        if (time.slice(0, 1) !== "1") {
+            //check if time is not 10:00am, 11:00am, or 12:00am
             formattedTime = "0" + time;
         }
     } else if (time.endsWith("pm")) {
-        if ((time.slice(0, 2)) != "12") {//check if time is past 12 pm
-            formattedTime = (parseInt(time.slice(0, 1)) + 12).toString()//1 -> "13", 2, -> "14", 5 -> "17", etc.
+        if (time.slice(0, 2) !== "12") {
+            //check if time is past 12 pm
+            formattedTime = (parseInt(time.slice(0, 1)) + 12).toString(); //1 -> "13", 2, -> "14", 5 -> "17", etc.
             formattedTime += time.slice(1, 4) + ":00-05:00";
-            return formattedTime;
+            return adjustToDaylightSavingsTime(formattedTime);
         }
     }
-    formattedTime = formattedTime.slice(0, formattedTime.length - 2) + ":00-05:00"; //EST has offset of 5 hours from UTC (Coordinated Universal Time)
+
+    //remove "am" or "pm" from end of time string
+    //EST has offset of 5 hours from UTC (Coordinated Universal Time)
+    formattedTime =
+        formattedTime.slice(0, formattedTime.length - 2) + ":00-05:00";
+    return adjustToDaylightSavingsTime(formattedTime);
+}
+
+//Bug fix: 4/20/24
+//For Summer and Fall Semesters, the formattedTime is shifted back 1 hour to account for Daylight Savings (due to bug with Google Calendar that shifts all events after Daylight
+//Savings time forward by 1 hour)
+//09:30:00-5:00 -> 08:30:00-5:00
+//12:00:00-5:00 -> 11:00:00-5:00
+//17:00:00-5:00 -> 16:00:00-5:00
+//18:15:00-5:00 -> 17:15:00-5:00
+function adjustToDaylightSavingsTime(formattedTime) {
+    if (currSemester.includes("Summer") || currSemester.includes("Fall")) {
+        let formattedHour = "";
+        if (formattedTime.slice(0, 1) !== "1") {
+            //condition for times from 7 am (inclusive) - 10 am (exclusive) where the hour has 1 digit
+            formattedHour = parseInt((formattedTime.slice(1, 2)) - 1).toString();
+        } else {
+            //condition for times from 10 am (inclusive) to 10 pm (inclusive) where the hour has 2 digits
+            formattedHour = parseInt((formattedTime.slice(0, 2)) - 1).toString();
+        }
+        formattedTime = formattedHour + formattedTime.slice(2);
+    }
     return formattedTime;
 }
 
