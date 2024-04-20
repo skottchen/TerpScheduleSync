@@ -1,4 +1,4 @@
-const API_KEY = "##########################"
+const API_KEY = "AIzaSyDc-NMRQwMYohXnR69RfI0XGbfJXj2VAOA"
 let calendarId;
 let currSemester;
 let colorCount = 1;
@@ -84,7 +84,7 @@ async function parseCourse(course, token) {//format schedule data so that is rea
     courseArr.forEach((elem) => {
         if (elem instanceof Array) {
             const elemIdx = courseArr.indexOf(elem);
-            courseArr[elemIdx] = parseCourseDayTime(courseArr[elemIdx], courseArr[0]);
+            courseArr[elemIdx] = parseCourseDayTime(courseArr[elemIdx]);
         }
     })
 
@@ -104,7 +104,7 @@ async function parseCourse(course, token) {//format schedule data so that is rea
 }
 
 //format the course day and time so that it is readable by Google Calendar API
-function parseCourseDayTime(timeArr, courseName) {
+function parseCourseDayTime(timeArr) {
     let formattedDaysStr = "";
 
     //parse course day
@@ -137,12 +137,8 @@ function parseCourseDayTime(timeArr, courseName) {
     );
 
     timeArr[0] = formattedDaysStr;
-    console.log("Time not in GCal API Format: " + courseName + " " + timeArr[1])
-    console.log("Time not in GCal API Format: " + courseName + " " + timeArr[2])
     timeArr[1] = parseCourseTime(timeArr[1]);
     timeArr[2] = parseCourseTime(timeArr[2]);
-    console.log("Time converted to GCal API Format: " + courseName + " " + timeArr[1])
-    console.log("Time converted to GCal API Format: " + courseName + " " + timeArr[2])
     return timeArr;
 }
 
