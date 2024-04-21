@@ -289,13 +289,13 @@ function getSemesterStartDate() {
         startDate = "2024-07-08"
     } else if (currSemester == "Fall 2024") {
         startDate = "2024-08-26"
-    } else if (startDate == "Winter 2025") {
+    } else if (currSemester == "Winter 2025") {
         startDate = "2025-01-02"
-    } else if (startDate == "Spring 2025") {
+    } else if (currSemester == "Spring 2025") {
         startDate = "2025-01-27"
-    } else if (startDate == "Summer I 2025") {
+    } else if (currSemester == "Summer I 2025") {
         startDate = "2025-06-02"
-    } else if (startDate == "Summer II 2025") {
+    } else if (currSemester == "Summer II 2025") {
         startDate = "2025-07-14"
     } else {//Fall 2025
         startDate = "2025-09-02"
@@ -317,13 +317,13 @@ function getSemesterEndDate() {
         semesterEndDate = "20240817"
     } else if (currSemester == "Fall 2024") {
         semesterEndDate = "20241210"
-    } else if (startDate == "Winter 2025") {
+    } else if (currSemester == "Winter 2025") {
         semesterEndDate = "20250123"
-    } else if (startDate == "Spring 2025") {
+    } else if (currSemester == "Spring 2025") {
         semesterEndDate = "20250514"
-    } else if (startDate == "Summer I 2025") {
+    } else if (currSemester == "Summer I 2025") {
         semesterEndDate = "20250712"
-    } else if (startDate == "Summer II 2025") {
+    } else if (currSemester == "Summer II 2025") {
         semesterEndDate = "20250823"
     } else {//Fall 2025
         semesterEndDate = "20251213"
