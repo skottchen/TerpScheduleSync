@@ -297,7 +297,7 @@ function getSemesterStartDate() {
         startDate = "2025-06-02"
     } else if (currSemester == "Summer II 2025") {
         startDate = "2025-07-14"
-    } else {//Fall 2025
+    } else {//Fall 2025 (and beyond?)
         startDate = "2025-09-02"
     }
     return startDate;
@@ -325,7 +325,7 @@ function getSemesterEndDate() {
         semesterEndDate = "20250712"
     } else if (currSemester == "Summer II 2025") {
         semesterEndDate = "20250823"
-    } else {//Fall 2025
+    } else {//Fall 2025 (and beyond?)
         semesterEndDate = "20251213"
     }
     return semesterEndDate;
@@ -333,6 +333,7 @@ function getSemesterEndDate() {
 
 //the purpose of this function is to delete the instances of courses/dicussions in the
 //first day of the semester that shouldn't be there
+//it enables the extension to support multiple semesters (Fall 2023 to Fall 2025)
 async function deleteFirstDayIncorrectInstances(token) {
     const firstDayStart = getSemesterStartDate() + "T07:00:00-05:00"; // 7 am EST
     const firstDayEnd = getSemesterStartDate() + "T22:00:00-05:00"; // 10 pm EST
