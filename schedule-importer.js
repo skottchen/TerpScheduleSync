@@ -1,4 +1,4 @@
-const API_KEY = "##########################"
+const API_KEY = "AIzaSyDc-NMRQwMYohXnR69RfI0XGbfJXj2VAOA"
 let calendarId;
 let currSemester;
 let colorCount = 1;
@@ -6,15 +6,15 @@ let colorCount = 1;
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
         const token = request.token;
-        await getScheduleData(token);
+        await scrapeScheduleDataFromTestudo(token);
         await new Promise((r) => setTimeout(r, 2000));
-        await deleteFirstDayIncorrectInstances(token);
+        await cleanUpFirstDayOfClasses(token);
         colorCount = 1;
         window.open("https://calendar.google.com/calendar/u/0/r")
     }
 });
 
-async function getScheduleData(token) {
+async function scrapeScheduleDataFromTestudo(token) {
     await new Promise((r) => setTimeout(r, 3000)); //wait for Testudo to load as it is often under heavy traffic
     currSemester = document.querySelector("span.header-dropdown-label").innerText;
     let studentCourses = document.querySelectorAll(".course-card-container--info");
@@ -334,7 +334,7 @@ function getSemesterEndDate() {
 //the purpose of this function is to delete the instances of courses/dicussions in the
 //first day of the semester that shouldn't be there
 //it enables the extension to support multiple semesters (Fall 2023 to Fall 2025)
-async function deleteFirstDayIncorrectInstances(token) {
+async function cleanUpFirstDayOfClasses(token) {
     const firstDayStart = getSemesterStartDate() + "T07:00:00-05:00"; // 7 am EST
     const firstDayEnd = getSemesterStartDate() + "T22:00:00-05:00"; // 10 pm EST
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}&timeMin=${firstDayStart}&timeMax=${firstDayEnd}`;
