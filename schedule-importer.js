@@ -181,10 +181,11 @@ function adjustToDaylightSavingsTime(formattedTime) {
     if (currSemester.includes("Summer") || currSemester.includes("Fall")) {
         let formattedHour = "";
         if (formattedTime.slice(0, 1) !== "1") {
-            //condition for times from 7 am (inclusive) - 10 am (exclusive) where the hour has 1 digit
+            //condition for course times from 7 am (inclusive) - 9 am (inclusive) where the hour has 1 digit
             formattedHour = parseInt((formattedTime.slice(1, 2)) - 1).toString();
         } else {
-            //condition for times from 10 am (inclusive) to 10 pm (inclusive) where the hour has 2 digits
+            //condition for course times from 10 am (inclusive) to 7 pm (inclusive) where the hour (in gcal api formatted time 
+            //has 2 digits
             formattedHour = parseInt((formattedTime.slice(0, 2)) - 1).toString();
         }
         formattedTime = formattedHour + formattedTime.slice(2);
