@@ -1,6 +1,9 @@
 const API_KEY = "AIzaSyDc-NMRQwMYohXnR69RfI0XGbfJXj2VAOA"
 let calendarId;
 let currSemester;
+let currSemesterStartYear;
+let currSemesterStartMonth;
+let currSemesterStartDay;
 let colorCount = 1;
 
 chrome.runtime.onMessage.addListener(async function (request) {
@@ -10,7 +13,10 @@ chrome.runtime.onMessage.addListener(async function (request) {
         await new Promise((r) => setTimeout(r, 2000));
         await cleanUpFirstDayOfClasses(token);
         colorCount = 1;
-        window.open("https://calendar.google.com/calendar/u/0/r")
+
+        //Update 5/20: Add year, month, and day parameters to link so that users don't have to navigate all the way to the
+        //semester that they imported their classes for in Google Calendar
+        window.open(`https://calendar.google.com/calendar/u/0/r/week/${currSemesterStartYear}/${currSemesterStartMonth}/${currSemesterStartDay}`)
     }
 });
 
@@ -197,10 +203,10 @@ async function importCourseIntoGoogleCalendar(courseArr, token) {
     courseArr.forEach(async (elem) => {
         if (elem instanceof Array) {
             const elemIdx = courseArr.indexOf(elem);//idx of array with day and time of classes
-            const semesterStartDay = getSemesterStartDate();
+            const currSemesterStartDay = getCurrSemesterStartDate();
 
             //create an event for each lecture, discussion, or lab
-            await createEvent(token, colorId, semesterStartDay, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
+            await createEvent(token, colorId, currSemesterStartDay, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
         }
     })
 }
@@ -234,23 +240,23 @@ function getColorId() {
     return colorId;
 }
 //courseFormat - Lecture, Discussion, or Lab
-async function createEvent(token, colorId, semesterStartDay, courseName, courseTime, courseFormat, courseLocation) {
+async function createEvent(token, colorId, currSemesterStartDay, courseName, courseTime, courseFormat, courseLocation) {
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}`;
-    const semesterEndDate = getSemesterEndDate();
+    const currSemesterEndDate = getCurrSemesterEndDate();
     const eventDetails = {
         summary: courseName + " " + courseFormat,
         location: courseLocation,
         colorId: colorId,
         start: {
-            dateTime: `${semesterStartDay}T${courseTime[1]}`,
+            dateTime: `${currSemesterStartDay}T${courseTime[1]}`,
             timeZone: 'America/New_York',
         },
         end: {
-            dateTime: `${semesterStartDay}T${courseTime[2]}`,
+            dateTime: `${currSemesterStartDay}T${courseTime[2]}`,
             timeZone: 'America/New_York',
         },
         recurrence: [
-            `RRULE:FREQ=WEEKLY;UNTIL=${semesterEndDate};BYDAY=${courseTime[0]}`
+            `RRULE:FREQ=WEEKLY;UNTIL=${currSemesterEndDate};BYDAY=${courseTime[0]}`
         ],
     };
 
@@ -275,68 +281,85 @@ async function createEvent(token, colorId, semesterStartDay, courseName, courseT
     }
 }
 
-function getSemesterStartDate() {
+function getCurrSemesterStartDate() {
     let startDate = "";
     if (currSemester == "Fall 2023") {
-        startDate = "2023-08-28"
+        startDate = "2023-08-28";
     } else if (currSemester == "Winter 2024") {
-        startDate = "2024-01-02"
+        startDate = "2024-01-02";
     } else if (currSemester == "Spring 2024") {
-        startDate = "2024-01-24"
+        startDate = "2024-01-24";
     } else if (currSemester == "Summer I 2024") {
-        startDate = "2024-05-28"
+        startDate = "2024-05-28";
     } else if (currSemester == "Summer II 2024") {
-        startDate = "2024-07-08"
+        startDate = "2024-07-08";
     } else if (currSemester == "Fall 2024") {
-        startDate = "2024-08-26"
+        startDate = "2024-08-26";
     } else if (currSemester == "Winter 2025") {
-        startDate = "2025-01-02"
+        startDate = "2025-01-02";
     } else if (currSemester == "Spring 2025") {
-        startDate = "2025-01-27"
+        startDate = "2025-01-27";
     } else if (currSemester == "Summer I 2025") {
-        startDate = "2025-06-02"
+        startDate = "2025-06-02";
     } else if (currSemester == "Summer II 2025") {
-        startDate = "2025-07-14"
-    } else {//Fall 2025 (and beyond?)
-        startDate = "2025-09-02"
+        startDate = "2025-07-14";
+    } else {
+        //Fall 2025 (and beyond?)
+        startDate = "2025-09-02";
     }
+
+    currSemesterStartYear = getCurrSemesterStartYear(startDate);
+    currSemesterStartMonth = getCurrSemesterStartMonth(startDate);
+    currSemesterStartDay = getCurrSemesterStartDay(startDate);
     return startDate;
 }
 
-function getSemesterEndDate() {
-    let semesterEndDate = "";
+function getCurrSemesterStartYear(startDate) {
+    return startDate.slice(0, 4);
+}
+
+function getCurrSemesterStartMonth(startDate) {
+    return startDate.substr(6, 1);
+}
+
+function getCurrSemesterStartDay(startDate) {
+    return startDate.substring(startDate.length - 2, startDate.length);
+}
+
+function getCurrSemesterEndDate() {
+    let currSemesterEndDate = "";
     if (currSemester == "Fall 2023") {
-        semesterEndDate = "20231212"
+        currSemesterEndDate = "20231212"
     } else if (currSemester == "Winter 2024") {
-        semesterEndDate = "20240123"
+        currSemesterEndDate = "20240123"
     } else if (currSemester == "Spring 2024") {
-        semesterEndDate = "20240510"
+        currSemesterEndDate = "20240510"
     } else if (currSemester == "Summer I 2024") {
-        semesterEndDate = "20240706"
+        currSemesterEndDate = "20240706"
     } else if (currSemester == "Summer II 2024") {
-        semesterEndDate = "20240817"
+        currSemesterEndDate = "20240817"
     } else if (currSemester == "Fall 2024") {
-        semesterEndDate = "20241210"
+        currSemesterEndDate = "20241210"
     } else if (currSemester == "Winter 2025") {
-        semesterEndDate = "20250123"
+        currSemesterEndDate = "20250123"
     } else if (currSemester == "Spring 2025") {
-        semesterEndDate = "20250514"
+        currSemesterEndDate = "20250514"
     } else if (currSemester == "Summer I 2025") {
-        semesterEndDate = "20250712"
+        currSemesterEndDate = "20250712"
     } else if (currSemester == "Summer II 2025") {
-        semesterEndDate = "20250823"
+        currSemesterEndDate = "20250823"
     } else {//Fall 2025 (and beyond?)
-        semesterEndDate = "20251213"
+        currSemesterEndDate = "20251213"
     }
-    return semesterEndDate;
+    return currSemesterEndDate;
 }
 
 //the purpose of this function is to delete the instances of courses/dicussions in the
 //first day of the semester that shouldn't be there
 //it enables the extension to support multiple semesters (Fall 2023 to Fall 2025)
 async function cleanUpFirstDayOfClasses(token) {
-    const firstDayStart = getSemesterStartDate() + "T07:00:00-05:00"; // 7 am EST
-    const firstDayEnd = getSemesterStartDate() + "T22:00:00-05:00"; // 10 pm EST
+    const firstDayStart = getCurrSemesterStartDate() + "T07:00:00-05:00"; // 7 am EST
+    const firstDayEnd = getCurrSemesterStartDate() + "T22:00:00-05:00"; // 10 pm EST
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}&timeMin=${firstDayStart}&timeMax=${firstDayEnd}`;
     try {
         const response = await fetch(apiUrl, {
