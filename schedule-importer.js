@@ -8,10 +8,12 @@ let colorCount = 1;
 
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
+
         const token = request.token;
         await scrapeScheduleDataFromTestudo(token);
         await new Promise((r) => setTimeout(r, 2000));
         await cleanUpFirstDayOfClasses(token);
+
         colorCount = 1;
 
         //Update 5/20: Add year, month, and day parameters to link so that users don't have to navigate all the way to the
@@ -457,3 +459,4 @@ async function cancelFirstInstance(token, instanceId, startTime, endTime) {
         console.error('Error cancelling instance:', error);
     }
 }
+
