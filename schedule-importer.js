@@ -25,7 +25,6 @@ async function scrapeScheduleDataFromTestudo(token) {
             parseCourse(studentCourses[count].innerText, token);
             count++;
         }
-
     } else {
         alert("You are not registered for any classes this semester.");
     }

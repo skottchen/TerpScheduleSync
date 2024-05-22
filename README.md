@@ -17,6 +17,10 @@ The most challenging aspect of this project was working with the Google Calendar
 Simply download the [extension](https://chromewebstore.google.com/detail/terpschedulesync/jddhjnjljjagidpbanbfbacadiejbogn) from the Chrome Web Store and click through the buttons on the popup. Make sure to click continue on the OAuth consent screen. <br>
 <em>Note: This extension is only for students enrolled at the University of Maryland, College Park </em>
 
+## CHANGELOG
+
+4/20: Added function that enables extension to account for Daylight Savings Time (to avoid Fall and     Spring semester courses being shifted ahead by 1 hour)
+
 ## License
 Distributed under the MIT License. See `License.txt` for more information. 
 
