@@ -1,6 +1,6 @@
 # TerpScheduleSync
 
-Import your UMD College Park course schedule from Testudo to Google Calendar
+Imports UMD College Park students' course schedules from Testudo to Google Calendar
 
 ## Motivation
 
