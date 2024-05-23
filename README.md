@@ -1,6 +1,6 @@
 # TerpScheduleSync
 
-Import your semester course schedule from Testudo to Google Calendar
+Imports UMD College Park students' course schedules from Testudo to Google Calendar
 
 ## Motivation
 
@@ -25,7 +25,7 @@ Simply download the [extension](https://chromewebstore.google.com/detail/terpsch
 ## CHANGELOG
 
 4/20/24: 
-- Added function (adjustToDaylightSavingsTime) that enables extension to account for Daylight Savings Time (to avoid Fall and Spring semester courses being shifted ahead by 1 hour)
+- Added functionality that enables extension to account for Daylight Savings Time when importing courses from Testudo (avoids Fall and Spring semester courses being shifted ahead by 1 hour)
 
 5/22/24: 
 - Add year, month, and day parameters to Google Calendar link that opens when the program is finished running so that users don't have to navigate all the way to the semester that they imported their classes for in Google Calendar
