@@ -34,7 +34,3 @@ Simply download the [extension](https://chromewebstore.google.com/detail/terpsch
 ## License
 
 Distributed under the MIT License. See `License.txt` for more information.
-
-## Contact
-
-Send me an email at testudodev1@gmail.com
