@@ -32,7 +32,7 @@ Simply download the [extension](https://chromewebstore.google.com/detail/terpsch
 - Added progress bar to popup
 
 ## Contributing
-Send me an email at schen78997@gmail.com
+Send me an email at schen519@terpmail.umd.edu
 
 ## License
 
