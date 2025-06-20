@@ -17,7 +17,7 @@ The most challenging aspect of this project was working with the Google Calendar
 - HTML, CSS, JavaScript (asynchronous concepts: async/await, promises, setTimeout)
 - Chrome Extension API, Google Calendar API, Fetch API
 
-## How To Use
+## Usage
 
 Simply download the [extension](https://chromewebstore.google.com/detail/terpschedulesync/jddhjnjljjagidpbanbfbacadiejbogn) from the Chrome Web Store and click through the buttons on the popup. Make sure to click continue on the OAuth consent screen. <br>
 <em>Note: This extension is only for students enrolled at the University of Maryland, College Park </em>
@@ -30,6 +30,9 @@ Simply download the [extension](https://chromewebstore.google.com/detail/terpsch
 5/22/24: 
 - Added year, month, and day parameters to Google Calendar link that opens when the program is finished running so that users don't have to navigate all the way to the semester that they imported their classes for in Google Calendar
 - Added progress bar to popup
+
+## Contributing
+Send me an email at schen78997@gmail.com
 
 ## License
 
