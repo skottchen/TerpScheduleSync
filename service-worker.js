@@ -1,12 +1,21 @@
-chrome.runtime.onMessage.addListener(function (request) {
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+    console.log('Message received:', request);
+
     if (request.action === 'authorizeUser') {
-        // Perform tasks after user is authorized (e.g., send a message to content script)
         chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
             if (tabs[0].url.startsWith("https://app.testudo.umd.edu/#/main/schedule?termId")) {
-                chrome.tabs.sendMessage(tabs[0].id, { action: 'performTasksAfterAuthorization', token: request.token });
+                const messageToSend = {
+                    action: 'performTasksAfterAuthorization',
+                    token: request.token,
+                };
+                console.log('Message sent to content script:', messageToSend);
+                chrome.tabs.sendMessage(tabs[0].id, messageToSend);
             }
+        });
+    } else if (request.action === 'displayProgressBar'){
+        chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+          
         });
     }
 });
-
 

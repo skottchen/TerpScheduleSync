@@ -6,7 +6,7 @@ importBtn.textContent = "Import my schedule to Google Calendar!";
 importBtn.setAttribute("id", "import_btn");
 importBtn.addEventListener('click', () => {
     handleImportButtonClick();
-    displayProgressBar();
+    //displayProgressBar();
 });
 
 //this function was provided by the Chrome Extension API
@@ -40,10 +40,10 @@ function handleImportButtonClick() {
         sendMessageToServiceWorker(token);
     });
     document.getElementById("import_btn").disabled = true;
-    const progressBarCont = document.createElement("div");
-    progressBarCont.setAttribute("id", "container");
-    progressBarCont.style.marginTop = "10px";
-    popupBody.appendChild(progressBarCont);
+    // const progressBarCont = document.createElement("div");
+    // progressBarCont.setAttribute("id", "container");
+    // progressBarCont.style.marginTop = "10px";
+    // popupBody.appendChild(progressBarCont);
 }
 
 function sendMessageToServiceWorker(token) {
@@ -52,36 +52,36 @@ function sendMessageToServiceWorker(token) {
 
 //Update 5/22/24
 //Add progress bar to popup
-function displayProgressBar() {
-    //from https://jsfiddle.net/kimmobrunfeldt/k5v2d0rr/
-    const bar = new ProgressBar.Line(container, {
-        strokeWidth: 5,
-        easing: 'easeInOut',
-        duration: 13000,
-        color: '#FFEA82',
-        trailColor: '#eee',
-        trailWidth: 1,
-        text: {
-            style: {
-                // Text color.
-                // Default: same as stroke color (options.color)
-                color: 'black',
-                position: 'absolute',
-                right: '0',
-                bottom: '6px',
-                padding: 0,
-                margin: 0,
-                transform: null,
-            },
-            autoStyleContainer: false
-        },
-        from: { color: '#FFEA82' },
-        to: { color: '#ED6A5A' },
-        step: (state, bar) => {
-            bar.setText(Math.round(bar.value() * 100) + ' %');
-        }
-    });
+// function displayProgressBar() {
+//     //from https://jsfiddle.net/kimmobrunfeldt/k5v2d0rr/
+//     const bar = new ProgressBar.Line(container, {
+//         strokeWidth: 5,
+//         easing: 'easeInOut',
+//         duration: 13000,
+//         color: '#FFEA82',
+//         trailColor: '#eee',
+//         trailWidth: 1,
+//         text: {
+//             style: {
+//                 // Text color.
+//                 // Default: same as stroke color (options.color)
+//                 color: 'black',
+//                 position: 'absolute',
+//                 right: '0',
+//                 bottom: '6px',
+//                 padding: 0,
+//                 margin: 0,
+//                 transform: null,
+//             },
+//             autoStyleContainer: false
+//         },
+//         from: { color: '#FFEA82' },
+//         to: { color: '#ED6A5A' },
+//         step: (state, bar) => {
+//             bar.setText(Math.round(bar.value() * 100) + ' %');
+//         }
+//     });
 
-    bar.animate(1);  // Number from 0.0 to 1.0
-}
+//     bar.animate(1);  // Number from 0.0 to 1.0
+// }
 

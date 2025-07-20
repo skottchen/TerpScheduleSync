@@ -8,6 +8,8 @@ let colorCount = 1;
 
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
+        //Update 5/23/24: Send message back to the popup (via service worker) to display the progress bar after the user is authorized
+        chrome.runtime.sendMessage({ action: 'displayProgressBar' });
 
         const token = request.token;
         await scrapeScheduleDataFromTestudo(token);
