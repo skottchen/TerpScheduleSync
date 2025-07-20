@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Scott Chen
+// This source code is licensed under the MIT License
 import { API_KEY } from './config.js';
 let calendarId;
 let currSemester;

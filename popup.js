@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Scott Chen
+// This source code is licensed under the MIT License
 const importBtn = document.createElement("button");
 const link = document.querySelector('a');
 const popupBody = document.querySelector("body");
@@ -8,6 +10,8 @@ importBtn.addEventListener('click', () => {
     handleImportButtonClick();
     displayProgressBar();
 });
+
+verifyTestudoIsOpen();
 
 //this function was provided by the Chrome Extension API
 async function getCurrentTab() {//returns a promise
@@ -31,8 +35,6 @@ async function verifyTestudoIsOpen() {
         }
     )
 }
-
-verifyTestudoIsOpen();
 
 function handleImportButtonClick() {
     chrome.identity.getAuthToken({ interactive: true }, function (token) {

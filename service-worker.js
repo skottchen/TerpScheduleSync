@@ -1,3 +1,5 @@
+// Copyright (c) 2025 Scott Chen
+// This source code is licensed under the MIT License
 chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
     console.log('Message received:', request);
 
