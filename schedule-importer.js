@@ -1,4 +1,4 @@
-const API_KEY = "####################"
+import { API_KEY } from './config.js';
 let calendarId;
 let currSemester;
 let currSemesterStartYear;
