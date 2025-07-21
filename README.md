@@ -17,12 +17,10 @@ Manually entering class schedules from Testudo into Google Calendar is a tedious
 ## How It Works
 
 1. Download the [extension](https://chromewebstore.google.com/detail/terpschedulesync/jddhjnjljjagidpbanbfbacadiejbogn) from the Chrome Web Store.
-2. Open the schedule page on Testudo.
-3. Click the import button in the extension popup.
+2. Navigate to your schedule page in Testudo using the red button in the extension popup. 
+3. Click the green button in the extension popup to begin the import process. 
 4. Authorize access to your Google Calendar when prompted.
 5. Your classes will be automatically added to Google Calendar for the correct semester.
-
-> **Note:** This extension is intended for students enrolled at the University of Maryland, College Park.
 
 ## Technologies Used
 
