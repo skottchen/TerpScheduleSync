@@ -36,21 +36,21 @@ async function importCourseScheduleIntoGCal(token) {
     studentCourses = document.querySelectorAll(".course-card-container--info");
     currSemester = document.querySelector("span.header-dropdown-label").innerText;
     if (studentCourses.length > 0) { //only create a calendar if the student is registered for any courses
-        await createNewCalendar(token); 
-        
-        //Update 5/20/24: Add year, month, and day parameters to link so that users don't have to navigate all the way to the
-        //semester that they imported their classes for in Google Calendar
-        window.open(`https://calendar.google.com/calendar/u/0/r/week/${currSemesterStartYear}/${currSemesterStartMonth}/${currSemesterStartDay}`)
+        await createNewCalendar(token);
+
         let count = 0;
         for (const course of studentCourses) {
             await parseCourse(studentCourses[count].innerText, token);
             count++;
         }
+
         await new Promise((r) => setTimeout(r, 2000)); //wait for Google Calendar API to finish processing the requests before cleaning up the first day of classes
         await removeUnwantedEventsFromFirstDay(token); //remove unwanted course/discussion events from the first day of the semester in Google Calendar
-    } else {
-        const studentName = document.querySelector('span.header-dropdown-label.header-dropdown-shift-left.ng-binding').innerText;
-        alert(`${studentName}, you are not registered for any ${currSemester} courses. Please register for courses before importing your schedule to Google Calendar.`);
+
+        window.open(`https://calendar.google.com/calendar/u/0/r/week/${currSemesterStartYear}/${currSemesterStartMonth}/${currSemesterStartDay}`)
+        // } else {
+        //     const studentName = document.querySelector('span.header-dropdown-label.header-dropdown-shift-left.ng-binding').innerText;
+        //     alert(`${studentName}, you are not registered for any ${currSemester} courses. Please register for courses before importing your schedule to Google Calendar.`);
     }
 }
 
