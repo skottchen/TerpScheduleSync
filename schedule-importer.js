@@ -1,6 +1,6 @@
 // Copyright (c) 2024-2025 Scott Chen
 // This source code is licensed under the MIT License
-const API_KEY = "AIzaSyAlJsgOWpHg1hBhD3jcTTB4cVCWIbS8zVI"; // Usage restricted to this extension
+const API_KEY = ########################
 let studentCourses;
 let calendarId;
 let currSemester;
