@@ -55,7 +55,7 @@ Manually entering class schedules from Testudo into Google Calendar is a tedious
 
 ## Contributing
 
-Contributions are welcome! Please email [testudodev1@gmail.com](mailto:testudodev1@gmail.com) with suggestions or pull requests.
+Contributions are welcome! Please email [testudodev1@gmail.com](mailto:testudodev1@gmail.com) with any suggestions, bug reports, or pull requests.
 
 ## License
 
