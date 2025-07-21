@@ -1,4 +1,4 @@
-// Copyright (c) 2025 Scott Chen
+// Copyright (c) 2024-2025 Scott Chen
 // This source code is licensed under the MIT License
 const importBtn = document.createElement("button");
 const link = document.querySelector('a');
@@ -60,7 +60,7 @@ function displayProgressBar() {
         strokeWidth: 5,
         easing: 'easeInOut',
         duration: 13000,
-        color: '#FFEA82',
+        color: 'green',
         trailColor: '#eee',
         trailWidth: 1,
         text: {
@@ -77,8 +77,6 @@ function displayProgressBar() {
             },
             autoStyleContainer: false
         },
-        from: { color: '#FFEA82' },
-        to: { color: '#ED6A5A' },
         step: (state, bar) => {
             bar.setText(Math.round(bar.value() * 100) + ' %');
         }

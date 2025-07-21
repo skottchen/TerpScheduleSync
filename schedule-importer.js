@@ -1,6 +1,7 @@
-// Copyright (c) 2025 Scott Chen
+// Copyright (c) 2024-2025 Scott Chen
 // This source code is licensed under the MIT License
-import { API_KEY } from './config.js';
+const API_KEY = "###########################";
+let studentCourses;
 let calendarId;
 let currSemester;
 let currSemesterStartYear;
@@ -10,35 +11,46 @@ let colorCount = 1;
 
 chrome.runtime.onMessage.addListener(async function (request) {
     if (request.action === 'performTasksAfterAuthorization') {
+
+        //Update 7/20/25: Initialize variables here so that no data from the previous import is used
+        studentCourses = [];
+        currSemester = "";
+        calendarId = "";
+        currSemesterStartYear = "";
+        currSemesterStartMonth = "";
+        currSemesterStartDay = "";
+        colorCount = 1;
+
         //Update 5/23/24: Send message back to the popup (via service worker) to display the progress bar after the user is authorized
         chrome.runtime.sendMessage({ action: 'displayProgressBar' });
 
         const token = request.token;
-        await scrapeScheduleDataFromTestudo(token);
-        await new Promise((r) => setTimeout(r, 2000));
-        await cleanUpFirstDayOfClasses(token);
 
-        colorCount = 1;
-
-        //Update 5/20: Add year, month, and day parameters to link so that users don't have to navigate all the way to the
-        //semester that they imported their classes for in Google Calendar
-        window.open(`https://calendar.google.com/calendar/u/0/r/week/${currSemesterStartYear}/${currSemesterStartMonth}/${currSemesterStartDay}`)
+        //Update 7/20/25: Move all course import logic into this function
+        await importCourseScheduleIntoGCal(token);
     }
 });
 
-async function scrapeScheduleDataFromTestudo(token) {
-    await new Promise((r) => setTimeout(r, 3000)); //wait for Testudo to load as it is often under heavy traffic
+async function importCourseScheduleIntoGCal(token) {
+    await new Promise((r) => setTimeout(r, 3000)); //allow time for Testudo to load before querying for courses
+    studentCourses = document.querySelectorAll(".course-card-container--info");
     currSemester = document.querySelector("span.header-dropdown-label").innerText;
-    let studentCourses = document.querySelectorAll(".course-card-container--info");
-    if (studentCourses.length > 0) {
-        await createNewCalendar(token); //only create a calendar if the student is registered for any courses
+    if (studentCourses.length > 0) { //only create a calendar if the student is registered for any courses
+        await createNewCalendar(token); 
+        
+        //Update 5/20/24: Add year, month, and day parameters to link so that users don't have to navigate all the way to the
+        //semester that they imported their classes for in Google Calendar
+        window.open(`https://calendar.google.com/calendar/u/0/r/week/${currSemesterStartYear}/${currSemesterStartMonth}/${currSemesterStartDay}`)
         let count = 0;
         for (const course of studentCourses) {
-            parseCourse(studentCourses[count].innerText, token);
+            await parseCourse(studentCourses[count].innerText, token);
             count++;
         }
+        await new Promise((r) => setTimeout(r, 2000)); //wait for Google Calendar API to finish processing the requests before cleaning up the first day of classes
+        await removeUnwantedEventsFromFirstDay(token); //remove unwanted course/discussion events from the first day of the semester in Google Calendar
     } else {
-        alert("You are not registered for any classes this semester.");
+        const studentName = document.querySelector('span.header-dropdown-label.header-dropdown-shift-left.ng-binding').innerText;
+        alert(`${studentName}, you are not registered for any ${currSemester} courses. Please register for courses before importing your schedule to Google Calendar.`);
     }
 }
 
@@ -181,7 +193,7 @@ function parseCourseTime(time) {
     return adjustToDaylightSavingsTime(formattedTime);
 }
 
-//Bug fix: 4/20/24
+//Update 4/20/24: 
 //For Summer and Fall Semesters, the formattedTime is shifted back 1 hour to account for Daylight Savings (due to bug with Google Calendar that shifts all events after Daylight
 //Savings time forward by 1 hour)
 //09:30:00-5:00 -> 08:30:00-5:00
@@ -309,9 +321,31 @@ function getCurrSemesterStartDate() {
         startDate = "2025-06-02";
     } else if (currSemester == "Summer II 2025") {
         startDate = "2025-07-14";
-    } else {
-        //Fall 2025 (and beyond?)
+    } else if (currSemester == "Fall 2025") {
         startDate = "2025-09-02";
+    } else if (currSemester == "Winter 2026") {
+        startDate = "2026-01-02";
+    } else if (currSemester == "Spring 2026") {
+        startDate = "2026-01-26";
+    } else if (currSemester == "Summer I 2026") {
+        startDate = "2026-06-01";
+    } else if (currSemester == "Summer II 2026") {
+        startDate = "2026-07-13";
+    } else if (currSemester == "Fall 2026") {
+        startDate = "2026-08-31";
+    } else if (currSemester == "Winter 2027") {
+        startDate = "2027-01-04";
+    } else if (currSemester == "Spring 2027") {
+        startDate = "2027-01-25";
+    } else if (currSemester == "Summer I 2027") {
+        startDate = "2027-06-07";
+    } else if (currSemester == "Summer II 2027") {
+        startDate = "2027-07-19";
+    } else if (currSemester == "Fall 2027") {
+        startDate = "2027-08-30";
+    } else {
+        // Future semesters not supported. UMD will transition to a new system in Fall 2028.
+        startDate = "TBD";
     }
 
     currSemesterStartYear = getCurrSemesterStartYear(startDate);
@@ -354,16 +388,37 @@ function getCurrSemesterEndDate() {
         currSemesterEndDate = "20250712"
     } else if (currSemester == "Summer II 2025") {
         currSemesterEndDate = "20250823"
-    } else {//Fall 2025 (and beyond?)
-        currSemesterEndDate = "20251213"
+    } else if (currSemester == "Fall 2025") {
+        currSemesterEndDate = "20251213";
+    } else if (currSemester == "Winter 2026") {
+        currSemesterEndDate = "20260122";
+    } else if (currSemester == "Spring 2026") {
+        currSemesterEndDate = "20260513";
+    } else if (currSemester == "Summer I 2026") {
+        currSemesterEndDate = "20260711";
+    } else if (currSemester == "Summer II 2026") {
+        currSemesterEndDate = "20260822";
+    } else if (currSemester == "Fall 2026") {
+        currSemesterEndDate = "20261212";
+    } else if (currSemester == "Winter 2027") {
+        currSemesterEndDate = "20270121";
+    } else if (currSemester == "Spring 2027") {
+        currSemesterEndDate = "20270512";
+    } else if (currSemester == "Summer I 2027") {
+        currSemesterEndDate = "20270710";
+    } else if (currSemester == "Summer II 2027") {
+        currSemesterEndDate = "20270821";
+    } else if (currSemester == "Fall 2027") {
+        currSemesterEndDate = "20271214";
+    } else {
+        // Future semesters not supported. UMD will transition to a new system in Fall 2028.
+        currSemesterEndDate = "TBD";
     }
     return currSemesterEndDate;
 }
 
-//the purpose of this function is to delete the instances of courses/dicussions in the
-//first day of the semester that shouldn't be there
-//it enables the extension to support multiple semesters (Fall 2023 to Fall 2025)
-async function cleanUpFirstDayOfClasses(token) {
+// Removes unwanted course/discussion events from the first day of the semester in Google Calendar to ensure accurate recurring events
+async function removeUnwantedEventsFromFirstDay(token) {
     const firstDayStart = getCurrSemesterStartDate() + "T07:00:00-05:00"; // 7 am EST
     const firstDayEnd = getCurrSemesterStartDate() + "T22:00:00-05:00"; // 10 pm EST
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}&timeMin=${firstDayStart}&timeMax=${firstDayEnd}`;

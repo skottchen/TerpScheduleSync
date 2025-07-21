@@ -45,6 +45,14 @@ Manually entering class schedules from Testudo into Google Calendar is a tedious
 - Added year, month, and day parameters to Google Calendar link for direct navigation to the imported semester
 - Added progress bar to popup for improved user experience
 
+**7/20/25:**
+- Extended semester support through Fall 2027, including all Winter, Spring, and Summer semesters (UMD will transition from Testudo to a new system in Fall 2028)
+- Improved copyright and license statements in all code files
+- Polished and reorganized the README for clarity and completeness
+- Updated logic to reinitialize variables before each import to prevent stale data
+- Refactored course import logic for better maintainability
+- Updated progress bar color
+
 ## Contributing
 
 Contributions are welcome! Please email [testudodev1@gmail.com](mailto:testudodev1@gmail.com) with suggestions or pull requests.
