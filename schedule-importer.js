@@ -35,7 +35,7 @@ async function importCourseScheduleIntoGCal(token) {
     await new Promise((r) => setTimeout(r, 3000)); //allow time for Testudo to load before querying for courses
     studentCourses = document.querySelectorAll(".course-card-container--info");
     currSemester = document.querySelector("span.header-dropdown-label").innerText;
-    if (studentCourses.length > 0) { //only create a calendar if the student is registered for any courses
+    if (studentCourses.length > 0) {
         await createNewCalendar(token);
 
         let count = 0;
@@ -122,7 +122,7 @@ async function parseCourse(course, token) {//format schedule data so that is rea
     })
 
     if (courseArr.length > 1) {
-        await importCourseIntoGoogleCalendar(courseArr, token);
+        await importCourseIntoGCal(courseArr, token);
     }
 }
 
@@ -216,14 +216,16 @@ function adjustToDaylightSavingsTime(formattedTime) {
     return formattedTime;
 }
 
-async function importCourseIntoGoogleCalendar(courseArr, token) {
-    const colorId = getColorId();//each course component (lecture and discussion) will have the same background color
+// Import each course into Google Calendar
+// Each course component (lecture, discussion, lab) will have the same background color
+async function importCourseIntoGCal(courseArr, token) {
+    const colorId = getColorId(); 
     courseArr.forEach(async (elem) => {
         if (elem instanceof Array) {
             const elemIdx = courseArr.indexOf(elem);//idx of array with day and time of classes
             const currSemesterStartDay = getCurrSemesterStartDate();
 
-            //create an event for each lecture, discussion, or lab
+            //create a Google Calendar event for each course component (lecture, discussion, lab)
             await createEvent(token, colorId, currSemesterStartDay, courseArr[0], courseArr[elemIdx], courseArr[elemIdx - 1], courseArr[elemIdx + 1])
         }
     })
