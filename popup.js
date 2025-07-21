@@ -13,7 +13,7 @@ importBtn.addEventListener('click', () => {
 
 verifyTestudoIsOpen();
 
-//this function was provided by the Chrome Extension API
+//Source: https://developer.chrome.com/docs/extensions/reference/api/tabs
 async function getCurrentTab() {//returns a promise
     let queryOptions = { active: true, lastFocusedWindow: true };
     // `tab` will either be a `tabs.Tab` instance or `undefined`.
@@ -52,10 +52,10 @@ function sendMessageToServiceWorker(token) {
     chrome.runtime.sendMessage({ action: 'authorizeUser', token: token });
 }
 
-//Update 5/22/24
+//Update: 5/22/24
 //Add progress bar to popup
+//Source: https://jsfiddle.net/kimmobrunfeldt/k5v2d0rr/
 function displayProgressBar() {
-    //from https://jsfiddle.net/kimmobrunfeldt/k5v2d0rr/
     const bar = new ProgressBar.Line(container, {
         strokeWidth: 5,
         easing: 'easeInOut',
