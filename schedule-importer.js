@@ -259,7 +259,7 @@ function getColorId() {
     colorCount++;
     return colorId;
 }
-//courseFormat - Lecture, Discussion, or Lab
+// Course format - Lecture, Discussion, or Lab
 async function createEvent(token, colorId, currSemesterStartDay, courseName, courseTime, courseFormat, courseLocation) {
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events?key=${API_KEY}`;
     const currSemesterEndDate = getCurrSemesterEndDate();
