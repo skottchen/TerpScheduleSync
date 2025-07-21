@@ -1,6 +1,6 @@
 // Copyright (c) 2024-2025 Scott Chen
 // This source code is licensed under the MIT License
-const API_KEY = "###########################";
+const API_KEY = "AIzaSyAlJsgOWpHg1hBhD3jcTTB4cVCWIbS8zVI"; // Usage restricted to this extension
 let studentCourses;
 let calendarId;
 let currSemester;
@@ -219,7 +219,7 @@ function adjustToDaylightSavingsTime(formattedTime) {
 // Import each course into Google Calendar
 // Each course component (lecture, discussion, lab) will have the same background color
 async function importCourseIntoGCal(courseArr, token) {
-    const colorId = getColorId(); 
+    const colorId = getColorId();
     courseArr.forEach(async (elem) => {
         if (elem instanceof Array) {
             const elemIdx = courseArr.indexOf(elem);//idx of array with day and time of classes
@@ -446,7 +446,7 @@ async function removeUnwantedEventsFromFirstDay(token) {
                 const subStrIdx = recurStr.indexOf(subStr);
                 const byDayStr = recurStr.substr(subStrIdx);
                 if (!byDayStr.includes(firstDay)) {
-                    await getFirstInstance(token, event.id);
+                    await getFirstInstanceId(token, event.id);
                 }
             }
         } else {
@@ -458,7 +458,8 @@ async function removeUnwantedEventsFromFirstDay(token) {
     }
 }
 
-async function getFirstInstance(token, eventId) {//necessary to get the instanceId
+// Get the instanceId of the first occurrence of a recurring event
+async function getFirstInstanceId(token, eventId) {
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${eventId}/instances?maxResults=1&key=${API_KEY}`;
     try {
         const response = await fetch(apiUrl, {
@@ -475,7 +476,7 @@ async function getFirstInstance(token, eventId) {//necessary to get the instance
             const firstInstanceStartTime = firstInstance.start.dateTime;
             const firstInstanceEndTime = firstInstance.end.dateTime;
             const instanceId = firstInstance.id;
-            await cancelFirstInstance(token, instanceId, firstInstanceStartTime, firstInstanceEndTime);
+            await removeFirstInstanceOfCourseFromGCal(token, instanceId, firstInstanceStartTime, firstInstanceEndTime);
         } else {
             const errorData = await response.json();
             console.error('Failed to fetch instances:', errorData.error.message);
@@ -485,7 +486,7 @@ async function getFirstInstance(token, eventId) {//necessary to get the instance
     }
 }
 
-async function cancelFirstInstance(token, instanceId, startTime, endTime) {
+async function removeFirstInstanceOfCourseFromGCal(token, instanceId, startTime, endTime) {
     const apiUrl = `https://www.googleapis.com/calendar/v3/calendars/${calendarId}/events/${instanceId}?key=${API_KEY}`;
     const eventToDelete = {
         start: {
